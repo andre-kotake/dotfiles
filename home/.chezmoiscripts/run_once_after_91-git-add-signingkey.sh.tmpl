@@ -1,0 +1,28 @@
+# chezmoi:template:left-delimiter="# {{"
+# {{- includeTemplate "bash-shebang" . }}
+
+## Add user signing key to git config
+
+# Create temp file
+tmpfile=$(mktemp)
+
+cleanup() {
+    rm -f "$tmpfile"
+    unset signingkey
+}
+trap cleanup EXIT ERR
+
+# Get signing key and write to file
+info "Enter Git signing key: "
+read -rs signingkey
+echo
+
+{
+    echo "[user]"
+    echo "signingkey=${signingkey}"
+} >"$tmpfile"
+
+# Replace the target file 
+cp -f "$tmpfile" "$HOME/.config/git/signingkey"
+
+success "Updated Git signing key!"

@@ -1,0 +1,9 @@
+Host localhost
+  AddKeysToAgent ask
+  Match host * exec "gpg-connect-agent UPDATESTARTUPTTY /bye"
+
+Host git
+  Hostname github.com
+  User git
+  PreferredAuthentications publickey
+  ForwardAgent yes

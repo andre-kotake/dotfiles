@@ -1,0 +1,6 @@
+# They have specific folders, see .profile
+.bash_history
+.lesshst
+.npmrc
+.npm
+.gnupg

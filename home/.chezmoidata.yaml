@@ -1,0 +1,20 @@
+---
+externalRefreshPeriod: "168h"
+packages:
+  common:
+    - amd-ucode
+    - vim
+    - neovim
+    - bash-completion
+    - less
+    - bat
+    - eza
+  arch:
+    - keepassxc
+    - pkgfile
+    - firefox
+    - plymouth
+    - qbittorrent
+    - git-delta
+  yay:
+    - brave-bin

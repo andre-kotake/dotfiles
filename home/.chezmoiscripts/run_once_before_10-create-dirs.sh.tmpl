@@ -1,0 +1,33 @@
+#!# {{ lookPath "bash" }}
+# chezmoi:template:left-delimiter="# {{"
+
+create_path_if_not_exists() {
+  local path="$1"
+
+  if [ ! -e "$path" ]; then
+    echo "Creating path: $path"
+    mkdir -p "$path"
+  else
+    echo "Path already exists: $path"
+  fi
+}
+
+# List of paths to check and create if needed
+paths=(
+  "${HOME}/.local/state/bash"
+  "${HOME}/.local/share/bash-completion"
+  "${HOME}/.config/gnupg"
+  "${HOME}/.local/state/python"
+  "${HOME}/.cache/python"
+  "${HOME}/.local/share/python"
+  # "${HOME}/.local/share/go"
+  # "${HOME}/.local/share/cargo"
+  # "${HOME}/.config/npm/npmrc"
+  # "${HOME}/.local/share/android_sdk"
+  "${HOME}/.local/state/less"
+)
+
+# Loop over the paths and run the function
+for path in "${paths[@]}"; do
+  create_path_if_not_exists "$path"
+done

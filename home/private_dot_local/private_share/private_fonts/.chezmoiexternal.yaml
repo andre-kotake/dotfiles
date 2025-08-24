@@ -1,0 +1,23 @@
+---
+# chezmoi:template:left-delimiter="# {{"
+# {{ $version := "3.2.1" -}}
+
+HackNerdFont-Regular.ttf:
+  type: archive-file
+  url: https://github.com/ryanoasis/nerd-fonts/releases/download/v# {{ $version }}/Hack.zip
+  path: HackNerdFont-Regular.ttf
+
+DroidSansMNerdFont-Regular.otf:
+  type: archive-file
+  url: https://github.com/ryanoasis/nerd-fonts/releases/download/v# {{ $version }}/DroidSansMono.zip
+  path: DroidSansMNerdFont-Regular.otf
+
+FiraCodeNerdFont-Regular.ttf:
+  type: archive-file
+  url: https://github.com/ryanoasis/nerd-fonts/releases/download/v# {{ $version }}/FiraCode.zip
+  path: FiraCodeNerdFont-Regular.ttf
+
+JetBrainsMonoNerdFont-Regular.ttf:
+  type: archive-file
+  url: https://github.com/ryanoasis/nerd-fonts/releases/download/v# {{ $version }}/JetBrainsMono.zip
+  path: JetBrainsMonoNerdFont-Regular.ttf

@@ -1,0 +1,4 @@
+{{- if not .osInfo.isAndroid }}
+## Termux
+.termux
+{{- end }}

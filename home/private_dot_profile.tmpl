@@ -1,0 +1,105 @@
+# chezmoi:template:left-delimiter="# {{"
+## PATH
+###############################################################################
+
+export PATH="${PATH}:${HOME}/.local/bin"
+# {{- if lookPath "flutter" }}
+PATH="$HOME/.local/share/flutter/bin:$PATH"
+# {{- end }}
+
+
+
+## ENV
+###############################################################################
+
+export PROMPT_COMMAND="history -a ${PROMPT_COMMAND:+&& $PROMPT_COMMAND}" # appends history always
+export PROMPT_DIRTRIM=2
+export MANROFFOPT="-P -c"
+
+# History
+export HISTFILE="${HOME}/.local/state/history"
+export HISTSIZE=500000
+export HISTFILESIZE=100000
+export HISTCONTROL="erasedups:ignoreboth"
+export HISTIGNORE="&:[ ]*:exit:ls:ll:lt:l:bg:fg:history:clear"
+export HISTTIMEFORMAT='%F %T '
+
+# Para erro no Ubuntu WSL
+# export MAN_DISABLE_SECCOMP=1
+
+# {{- if lookPath "nvim" }}
+export EDITOR="nvim"
+export SUDO_EDITOR="nvim"
+export VISUAL="nvim"
+# {{- end }}
+
+# {{- if lookPath "less" }}
+export LESS="-E \
+--quit-if-one-screen \
+--ignore-case \
+--LONG-PROMPT \
+--RAW-CONTROL-CHARS \
+--tabs=2 \
+--mouse \
+--no-init \
+--use-color -Dd+rd -Dk+r -Ds+yd -Du+gd"
+export LESSHISTFILE="${HOME}/.local/state/less/history"
+export MANPAGER='less' # Could be bat too.
+export PAGER="less"
+# {{- end }}
+
+# {{- if lookPath "bat" }}
+export BAT_THEME="Dracula" 
+# {{- end }}
+
+# {{- if .osInfo.isAndroid }}
+# Fixes ruamel.yaml.clib installation for pip
+export CFLAGS="-Wno-incompatible-function-pointer-types"
+# {{- end }}
+
+
+
+## DEFAULT DIRECTORIES
+###############################################################################
+
+# {{- if lookPath "python" }}
+export PYTHON_HISTORY="${HOME}/.local/state/python/history"
+export PYTHONPYCACHEPREFIX="${HOME}/.cache/python"
+export PYTHONUSERBASE="${HOME}/.local/share/python"
+# {{- end }}
+# {{- if lookPath "go" }}
+export GOPATH="${HOME}/.local/share/go"
+# {{- end }}
+# {{- if lookPath "cargo" }}
+export CARGO_HOME="${HOME}/.local/share/cargo"
+# {{- end }}
+# {{- if lookPath "npm" }}
+export NPM_CONFIG_USERCONFIG="${HOME}/.config/npm/npmrc"
+# export ANDROID_HOME="${HOME}/.local/share/android_sdk
+# {{- end }}
+
+
+
+## SSH AGENT SUPPORT
+###############################################################################
+
+# Set GnuPG home directory
+export GNUPGHOME="${HOME}/.config/gnupg"
+
+# Communicate with gpg-agent instead of the default ssh-agent.
+unset SSH_AGENT_PID
+if [ "${gnupg_SSH_AUTH_SOCK_by:-0}" -ne $$ ]; then
+  SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+  export SSH_AUTH_SOCK
+fi
+
+# Configure pinentry to use the correct TTY
+export GPG_TTY=$(tty)
+
+# Get keygrip
+_keygrip=$(gpg --with-colons --list-secret-key | awk -F: '$1=="ssb" && $12=="a" {line=FNR+2} $1=="grp" && FNR=line {print $10}')
+
+# Refresh the TTY in case user has switched into an X session as stated in https://man.archlinux.org/man/gpg-agent.1
+gpg-connect-agent updatestartuptty "keyattr $_keygrip Use-for-ssh: true" /bye >/dev/null 2>&1
+
+unset _keygrip

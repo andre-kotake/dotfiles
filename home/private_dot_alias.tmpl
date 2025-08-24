@@ -1,0 +1,70 @@
+alias cls="clear"
+alias path='echo -e ${PATH//:/\\n}'
+
+alias mkdir='mkdir -p'
+mkcd() {
+  if [[ -d $1 ]]; then
+    echo -e "\033[33mDirectory '$1' already exists.\033[0m"
+  else
+    mkdir -p "$1" && cd "$1" || exit
+  fi
+}
+
+alias remove='shred --remove'
+alias rsync='rsync -ahW --no-compress --progress'
+alias wget="wget --hsts-file=\$XDG_DATA_HOME/wget-hsts"
+alias cp="cp -i --verbose"
+alias mv="mv -i --verbose"
+alias rm="rm -r -d -I --verbose"
+
+alias ..='../'
+alias ...='../..'
+alias ....='../../..'
+
+alias g='git'
+
+alias nv='nvim'
+alias kvim='NVIM_APPNAME=kickstart-modular.nvim nvim'
+
+# ls
+{{ if lookPath "eza" -}}
+alias eza='eza -hAF --color=always --icons=auto --git-repos --git --no-user --group-directories-last'
+alias ls='eza'
+alias lt='ls -L 3 -T -I .git'
+alias l='ls -L 1 -T -I .git'
+{{- else -}}
+alias ls='ls -AFh --color=always --group-directories-first'
+alias l='ls -1'
+{{- end }}
+alias ll='ls -l'
+
+{{ if lookPath "bat" -}}
+# bat
+alias cat='bat --style=plain'
+alias catt='cat --paging=never'
+
+help() { "$@" --help 2>&1 | bat --style=plain --language=help; }
+{{- end }}
+
+{{ if lookPath "chezmoi" -}}
+# chezmoi
+alias chza='chezmoi add'
+alias chzap='chezmoi apply'
+alias chzdf='chezmoi diff'
+alias chzs='chezmoi status'
+alias chze='chezmoi edit'
+{{- end }}
+
+{{ if lookPath "fzf" -}}
+# fzf
+alias fzff='find . -type f | fzf --preview 'bat --style=numbers --color=always --line-range=:50 {}' --preview-window=up:50%'
+# find . -maxdepth 1 -type f -not -path './.git/*' | fzf --preview 'bat --style=numbers --color=always --line-range=:50 {}' --preview-window=up:50%
+fzfg() { grep -r --files-with-matches "$1" . | fzf --preview 'bat {}' }
+{{- end }}
+
+{{ if lookPath "shfmt" -}}
+alias shfmt='shfmt -i 4 -bn -ci -w'
+{{- end }}
+{{ if lookPath "shellcheck" -}}
+alias shellcheck="shellcheck -x -a -s bash"
+{{- end }}

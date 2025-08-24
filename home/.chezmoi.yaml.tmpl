@@ -1,0 +1,51 @@
+---
+# chezmoi:template:left-delimiter="# {{"
+# {{/* *** VARIABLES *** */}}
+# {{- $scriptLib := (joinPath .chezmoi.workingTree "lib") -}}
+
+# {{/* *** OS INFO *** */}}
+# {{- $osRelease := .chezmoi.os -}}
+# {{- if (eq $osRelease "linux") -}}
+# {{-     $osRelease = .chezmoi.osRelease.id -}}
+# {{- end -}}
+# {{- $isAndroid := (eq $osRelease "android") -}}
+# {{- $isArch := (eq $osRelease "arch") -}}
+
+# {{/* *** CUSTOMIZATIONS *** */}}
+# {{- $gpgRecipient := promptStringOnce .chezmoi.config.gpg "recipient" "Enter GPG recipient" -}}
+# {{- $shellType := promptChoiceOnce . "shell" "Which shell?" (list "bash" "zsh") "bash" -}}
+
+# {{/* *** DATA *** */}} 
+sourceDir: "# {{- .chezmoi.config.sourceDir -}}"
+destDir: "# {{- .chezmoi.config.destDir -}}"
+
+encryption: "gpg"
+format: "yaml"
+interactive: true
+
+diff:
+  command: "delta"
+  exclude: [scripts]
+
+gpg:
+  recipient: "# {{ $gpgRecipient }}"
+  args: [--quiet]
+
+pinentry:
+  command: "pinentry-curses"
+
+status:
+  exclude: [externals]
+
+data:
+  scriptLib:
+    output: "# {{ joinPath $scriptLib "output.sh" }}"
+  shell: 
+    type: "# {{ $shellType }}"
+    bashUseOhMyPosh: false
+    
+  osInfo:
+    release: "# {{ $osRelease }}"
+    isAndroid: # {{ $isAndroid }}
+    isArch: # {{ $isArch }}
+

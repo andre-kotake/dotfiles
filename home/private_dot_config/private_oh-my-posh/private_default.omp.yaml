@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json
+
+console_title_template: "{{- if eq .OS \"android\" -}}{{- else -}}{{.UserName}}{{- end -}}@{{.HostName}} - {{.PWD}}"
+blocks:
+- type: prompt
+  alignment: left
+  newline: true
+  segments:
+  - type: session
+    properties:
+      cache_duration: none
+    template: "{{ if .SSHSession }}\ueba9 {{ .UserName }}<default>:</>{{ end }}"
+    style: plain
+    foreground: lightYellow
+  - type: path
+    properties:
+      cache_duration: none
+      max_depth: 3
+      style: agnoster_short
+    template: "{{- $git := .Segments.Git -}}  <b> 
+    {{- if $git.Ref -}}
+        {{- $git.RepoName -}}
+        {{- if (regexMatch \"^~\\\\/\\\\.\\\\.\\\\/\" .Path) -}}     
+          {{- .Path | replace (print \"~/../\" $git.RepoName) \"\" -}}   
+        {{- else -}}     
+          {{- .Path | replace $git.Dir \"\" -}}   
+        {{- end -}} 
+    {{- else -}}   
+      {{- .Path -}} 
+    {{- end -}} </b>"
+    style: plain
+    foreground: "#42a9ff"
+  - type: git
+    properties:
+      branch_icon: "\ue725 "
+      cache_duration: none
+      fetch_stash_count: true
+      fetch_status: true
+    template: " {{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uf0c7 {{ .StashCount }}{{ end }}"
+    style: plain
+    foreground: "#ff94df"
+
+- type: prompt
+  alignment: left
+  segments:
+  - properties:
+      cache_duration: none
+    template: "{{ if .Root -}}\uf0e7{{-end-}}"
+    foreground: red
+    background: transparent
+    type: root
+    style: plain
+  - properties:
+      cache_duration: none
+    template: ❯
+    foreground: lightGreen
+    type: text
+    style: plain
+  newline: true
+version: 3
+final_space: true

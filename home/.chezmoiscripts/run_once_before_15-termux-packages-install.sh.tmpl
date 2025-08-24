@@ -1,0 +1,31 @@
+# chezmoi:template:left-delimiter="# {{"
+# {{ includeTemplate "bash-shebang" . }}
+
+# {{- if not .osInfo.isAndroid }}
+
+info "Not Termux, skipping."
+exit
+
+# {{- else }}
+
+echo "Installing required packages."
+pacman -Syu --noconfirm --needed --quiet \
+  gnupg \
+  openssh \
+  mandoc \
+  bash \
+  bash-completion \
+  readline \
+  less \
+  which \
+  git \
+  git-delta \
+  vim \
+  neovim \
+  bat \
+  eza \
+  oh-my-posh \
+  lua-language-server \
+  stylua
+
+# {{- end }}

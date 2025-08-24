@@ -1,0 +1,76 @@
+[user]
+  name = "André Kotake"
+  email = 36243244+andre-kotake@users.noreply.github.com
+[include] path = ./signingkey
+
+[commit]
+  gpgSign = true
+
+[init]
+  defaultBranch = main
+  templateDir = {{ joinPath .chezmoi.homeDir ".config" "git" "template" }}
+
+[pager]
+  branch = false
+
+[core]
+  whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+  autocrlf = input
+
+[status]
+  branch = true
+  relativePaths = false
+  showStash = true
+
+[include]
+  path = ./alias
+
+[push]
+  autoSetupRemote = true
+
+[merge]
+  tool = nvimdiff
+  conflictstyle = diff3
+[mergetool]
+  prompt = false
+  keepBackup = false
+[mergetool "nvimdiff"]
+  layout = "LOCAL,BASE,REMOTE / MERGED"
+
+[diff]
+  colorMoved = default
+
+{{ if lookPath "delta" -}}
+[include]
+  path = ./delta
+
+{{ end -}}
+
+[color]
+branch = always
+diff = always
+grep = always
+interactive = always
+pager = true
+showbranch = auto
+status = auto
+ui = always
+
+[color "interactive"]
+error = red bold
+
+[color "branch"]
+current = yellow reverse
+local = yellow
+remote = green
+
+[color "diff"]
+meta = yellow
+frag = magenta
+old = red
+new = green
+whitespace = white reverse
+
+[color "status"]
+changed = yellow
+branch = green bold

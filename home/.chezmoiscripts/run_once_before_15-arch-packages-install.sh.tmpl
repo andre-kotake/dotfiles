@@ -1,0 +1,57 @@
+# chezmoi:template:left-delimiter="# {{"
+# {{ includeTemplate "bash-shebang" . }}
+
+# {{- if not .osInfo.isArch }}
+
+info "Not Arch, skipping."
+exit
+
+# {{- else }}
+
+## Install pacman packages
+# {{- $needed := concat .packages.common .packages.arch -}}
+# {{- range $installed := (splitList "\n" (output "sudo" "pacman" "-Qeq" | trim)) -}}
+# {{- 	$needed = without $needed $installed -}}
+# {{- end }}
+# {{ if $needed -}}
+info "Installing pacman packages: # {{$needed}}"
+sudo pacman -Syu --quiet --noconfirm --needed # {{ $needed | join " " }}
+success "Finished pacman packages install."
+# {{- else -}}
+info "No pacman packages to install."
+# {{- end }}
+
+echo
+
+## Install yay if needed
+if ! command -v yay >/dev/null 2>&1; then
+    git clone https://aur.archlinux.org/yay-bin.git /tmp/yay-bin && cd /tmp/yay-bin && makepkg -si
+    yay -Y --gendb
+    yay -Syu --devel
+    yay -Y --devel --save
+else
+    info "Yay already installed."
+fi
+    
+echo
+
+## Install yay packages
+# {{- $needed = .packages.yay -}}
+# {{- range $installed := (splitList "\n" (output "sudo" "pacman" "-Qeq" | trim)) -}}
+# {{- 	$needed = without $needed $installed -}}
+# {{- end }}
+# {{ if $needed -}}
+info "Installing yay packages: # {{$needed}}"
+yay --quiet --noconfirm --needed # {{ $needed | join " "}}
+success "Finished yay packages install."
+# {{- else -}}
+info "No yay packages to install."
+# {{- end }}
+
+echo
+
+## Update pkgfile database
+sudo pkgfile -u
+
+# {{- end }}
+

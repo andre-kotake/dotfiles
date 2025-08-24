@@ -1,0 +1,39 @@
+[alias]
+alias = config --get-regexp ^alias\\.
+
+a = add
+aa = !git add -A && git status
+
+b = branch
+ba = branch --all
+br = branch -r
+
+bb = checkout -b
+bd = branch -D
+bdr = push origin --delete # remove branchs do remoto
+ck = checkout
+sw = switch -
+
+fb = fetch
+fc = fetch --prune
+pl = pull
+
+d = diff
+dd = diff --compact-summary
+ds = diff --staged
+dds = diff --compact-summary --staged
+# dss = -c delta.side-by-side=true diff
+
+c = commit
+cm = commit -m # commit with message
+
+ss = status -s --branch # short format
+s = status
+
+m = merge
+
+# one-line log
+l = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+ld = log --pretty=format:"%C(yellow)%h\\ %C(green)%ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short --graph
+ls = log --pretty=format:"%C(green)%h\\ %C(yellow)[%ad]%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=relative

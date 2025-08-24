@@ -1,0 +1,21 @@
+# chezmoi:template:left-delimiter="# {{"
+#!# {{ lookPath "bash" }}
+set -u
+
+# {{ "source" }} # {{ .scriptLib.output }}
+
+# Get and print script name
+_me=$(basename "$0")
+echo
+fill_width
+dimmed "$_me"
+
+# handle error and exit
+handle_err() {
+	local error_code=$?
+	local error_line=$BASH_LINENO
+	local error_command=$BASH_COMMAND
+  error "on line $error_line: $error_command (code: ${error_code})"
+	exit 1
+}
+trap handle_err ERR

@@ -1,0 +1,69 @@
+# chezmoi:template:left-delimiter="# {{"
+## If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+
+## VERSION CHECK ##
+if ((BASH_VERSINFO[0] < 4)); then
+  echo "You need at least bash-4.0 or some options will not work correctly."
+fi
+
+
+
+## GENERAL OPTIONS
+###############################################################################
+
+bind Space:magic-space # Enable history expansion with space
+set -o noclobber # Use `>|` to force redirection to an existing file
+shopt -s checkwinsize # Update window size after every command
+shopt -s globstar 2>/dev/null # Turn on recursive globbing (enables ** to recurse all directories)
+shopt -s nocaseglob # Case-insensitive globbing (used in pathname expansion)
+shopt -s histappend # Append to the history file, don't overwrite it
+shopt -s cmdhist # Save multi-line commands as one command
+shopt -s autocd 2>/dev/null # Prepend cd to directory names automatically
+shopt -s dirspell 2>/dev/null # Correct spelling errors during tab-completion
+shopt -s cdspell 2>/dev/null # Correct spelling errors in arguments supplied to cd
+shopt -u mailwarn # Disable email check
+unset MAILCHECK # Don't want my shell to warn me of incoming mail.
+# shopt -s cdable_vars
+# export dotfiles="$HOME/repositories/dotfiles"
+
+
+## ADDITIONAL CONFIGURATION
+###############################################################################
+
+# Aliases
+source "$HOME/.alias"
+
+# Additional configuration files in ~/.bashrc.d
+bashrc_dir="$HOME/.bashrc.d"
+for f in "$bashrc_dir"/*; do
+  source "$f"
+done
+unset f, bashrc_dir
+
+# Custom completions
+complete -d mkdir rmdir
+complete -cf man sudo
+# {{- if lookPath "pipx" }}
+if ! shopt -oq posix; then
+  eval "$(register-python-argcomplete pipx)"
+fi
+# {{- end }}
+
+# {{ if lookPath "pkgfile" -}}
+# Command not found handler
+if [ -f /usr/share/doc/pkgfile/command-not-found.bash ]; then
+  source /usr/share/doc/pkgfile/command-not-found.bash
+fi
+# {{- end }}
+
+# LSCOLORS
+if [ -f "$HOME/.local/share/dircolors/lscolors" ]; then
+  source "$HOME/.local/share/dircolors/lscolors"
+fi
+
+# {{- if (and (.shell.bashUseOhMyPosh) (lookPath "oh-my-posh")) }}
+# Initialize oh-my-posh
+eval "$(oh-my-posh init bash -c "$HOME"/.config/oh-my-posh/default.omp.yaml)"
+# {{- end }}
