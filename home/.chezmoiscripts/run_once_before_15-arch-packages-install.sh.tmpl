@@ -1,47 +1,51 @@
 # chezmoi:template:left-delimiter="# {{"
 # {{ includeTemplate "bash-shebang" . }}
+# {{ if (.osInfo.isArch) }}
+# {{- $template := "install-arch-packages" -}}
+# {{- $templateDir := printf "%s%s%s" .templateDir.dataDir .chezmoi.pathSeparator "arch-packages" -}}
+# {{- $installed := output "pacman" "-Qeq" | trim -}}
 
-# {{- if (.osInfo.isArch) }}
-# {{- $template := "install-arch-packages" }}
-# {{- $installed := output "pacman" "-Qeq" | trim }}
-
+##### FUNCTIONS
 install_from_pacman() {
-	:
+  :
+	# {{- $needed := (includeTemplate $templateDir | fromYaml).pacman -}}
 	# {{- $pacman := dict -}}
-	# {{- $_ := set $pacman "packages" (concat .packages.common .packages.arch) -}}
-	# {{- $_ := set $pacman "installed" $installed -}}
+	# {{- $_ := set $pacman "packages" (concat .packages.common $needed) -}}
+	# {{- $_ := set $pacman "installed" (output "pacman" "-Qeq" | trim) -}}
 	# {{- $_ := set $pacman "bin" "pacman" -}}
 	# {{- $_ := set $pacman "cmd" "sudo pacman -Syu --quiet --noconfirm --needed" -}}
-	# {{ includeTemplate $template $pacman | indent 4 }}
+  # {{ includeTemplate $template $pacman | indent 2 }}
 }
 
 install_from_yay() {
-	:
-	# {{- $yay := dict -}}
-	# {{- $_ := set $yay "packages" .packages.yay -}}
-	# {{- $_ := set $pacman "installed" $installed -}}
-	# {{- $_ := set $yay "bin" "yay" -}}
-	# {{- $_ := set $yay "cmd" "yay --quiet --noconfirm --needed" -}}
-	# {{ includeTemplate $template $yay | indent 4 }}
+  :
+  # {{- $needed := (includeTemplate $templateDir | fromYaml).yay -}}
+  # {{- $yay := dict -}}
+  # {{- $_ := set $yay "packages" $needed -}}
+  # {{- $_ := set $yay "installed" $installed -}}
+  # {{- $_ := set $yay "bin" "yay" -}}
+  # {{- $_ := set $yay "cmd" "yay --quiet --noconfirm --needed" -}}
+  # {{ includeTemplate $template $yay | indent 2 }}
 }
 
 install_yay() {
-	# Only install if needed
-	if ! command -v yay >/dev/null 2>&1; then
-		local tmpdir
-		tmpdir=$(mktemp -d)
-		git clone https://aur.archlinux.org/yay-bin.git "$tmpdir" &&
-			cd "$tmpdir" &&
-			makepkg -si &&
-			yay -Y --gendb &&
-			yay -Syu --devel &&
-			yay -Y --devel --save
-	else
-		info "Yay already installed."
-	fi
-	echo
+  # Only install if needed
+  if ! command -v yay >/dev/null 2>&1; then
+    local tmpdir
+    tmpdir=$(mktemp -d)
+    git clone https://aur.archlinux.org/yay-bin.git "$tmpdir" &&
+      cd "$tmpdir" &&
+      makepkg -si &&
+      yay -Y --gendb &&
+      yay -Syu --devel &&
+      yay -Y --devel --save
+  else
+    info "Yay already installed."
+  fi
+  echo
 }
 
+##### MAIN
 # Install packages
 install_from_pacman
 install_yay

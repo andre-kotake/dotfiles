@@ -1,0 +1,59 @@
+# chezmoi:template:left-delimiter="# {{"
+# {{ includeTemplate "bash-shebang" . }}
+# Create temp file
+tmpfile=$(mktemp)
+
+# cleanup() {
+#     rm -f "$tmpfile"
+#     unset signingkey
+# }
+# trap cleanup EXIT ERR
+
+##### FUNCTIONS
+# Returns true if config doesnt exists or key is not set.
+check_signingkey() {
+  local config_file="$HOME/.config/git/signingkey"
+
+  # Check if the file exists
+  if [[ -f "$config_file" ]]; then
+    # Check if the file contains a line starting with 'signingkey='
+    grep -q '^signingkey=' "$config_file" && echo 1 && return 
+   
+    # Extract the value after 'signingkey='
+    local key=$(grep '^signingkey=' "$config_file" | cut -d'=' -f2)
+    # Check if the value is empty
+    [[ -z "$key" ]] && echo 1 && return
+
+    echo 0
+  else
+    echo 1
+  fi
+}
+
+get_signingkey() {
+  info "Enter Git signing key: "
+  read -rs signingkey
+  echo
+
+  # Write to temp file
+  {
+    echo "[user]"
+    echo "signingkey=${signingkey}"
+  } >"$tmpfile"
+
+  # Replace the target file 
+  cp -f "$tmpfile" "$HOME/.config/git/signingkey"
+
+  success "Updated Git signing key!"
+}
+
+##### MAIN
+# Call the function and capture the output
+result=$(check_signingkey)
+# Check the result
+if [[ "$result" -eq 1 ]]; then
+  get_signingkey
+else
+  info "Signing key already set."
+fi
+

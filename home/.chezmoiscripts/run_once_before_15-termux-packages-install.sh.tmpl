@@ -3,8 +3,9 @@
 
 # {{- if .osInfo.isAndroid }}
 
+##### FUNCTIONS
 install_from_pacman() {
-	:
+  :
   # {{- $template := "install-arch-packages" }}
 	# {{- $templateDir := join .chezmoi.pathSeparator (list .templateDir.dataDir "ternux-packages") -}}
 	# {{- $needed := (includeTemplate $templateDir | fromYaml).pacman -}}
@@ -14,10 +15,10 @@ install_from_pacman() {
 	# {{- $_ := set $pacman "installed" (output "pacman" "-Qeq" | trim) -}}
 	# {{- $_ := set $pacman "bin" "pacman" -}}
 	# {{- $_ := set $pacman "cmd" "pacman -Syu --quiet --noconfirm --needed" -}}
-
-# {{ includeTemplate $template $pacman | indent 4 }}
+  # {{ includeTemplate $template $pacman | indent 2 }}
 }
 
+##### MAIN
 # Install packages
 install_from_pacman
 

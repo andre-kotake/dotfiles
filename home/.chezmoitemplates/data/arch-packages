@@ -1,0 +1,11 @@
+---
+# chezmoi:template:left-delimiter="# {{"
+pacman:
+  - keepassxc
+  - pkgfile
+  - firefox
+  - plymouth
+  - qbittorrent
+yay:
+  - brave-bin
+
