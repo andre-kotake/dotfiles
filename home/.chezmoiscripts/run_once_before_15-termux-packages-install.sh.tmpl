@@ -1,31 +1,27 @@
 # chezmoi:template:left-delimiter="# {{"
 # {{ includeTemplate "bash-shebang" . }}
 
-# {{- if not .osInfo.isAndroid }}
+# {{- if .osInfo.isAndroid }}
 
-info "Not Termux, skipping."
-exit
+install_from_pacman() {
+	:
+  # {{- $template := "install-arch-packages" }}
+	# {{- $templateDir := join .chezmoi.pathSeparator (list .templateDir.dataDir "ternux-packages") -}}
+	# {{- $needed := (includeTemplate $templateDir | fromYaml).pacman -}}
+
+	# {{- $pacman := dict -}}
+	# {{- $_ := set $pacman "packages" (concat .packages.common $needed) -}}
+	# {{- $_ := set $pacman "installed" (output "pacman" "-Qeq" | trim) -}}
+	# {{- $_ := set $pacman "bin" "pacman" -}}
+	# {{- $_ := set $pacman "cmd" "pacman -Syu --quiet --noconfirm --needed" -}}
+
+# {{ includeTemplate $template $pacman | indent 4 }}
+}
+
+# Install packages
+install_from_pacman
 
 # {{- else }}
-
-echo "Installing required packages."
-pacman -Syu --noconfirm --needed --quiet \
-  gnupg \
-  openssh \
-  mandoc \
-  bash \
-  bash-completion \
-  readline \
-  less \
-  which \
-  git \
-  git-delta \
-  vim \
-  neovim \
-  bat \
-  eza \
-  oh-my-posh \
-  lua-language-server \
-  stylua
-
+info "Not Termux, skipping."
+exit
 # {{- end }}

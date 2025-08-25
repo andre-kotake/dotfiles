@@ -1,7 +1,8 @@
 ---
 # chezmoi:template:left-delimiter="# {{"
 # {{/* *** VARIABLES *** */}}
-# {{- $scriptLib := (joinPath .chezmoi.workingTree "lib") -}}
+# {{- $scriptLib := joinPath .chezmoi.workingTree "lib" -}}
+# {{- $templateDir := list "." ".chezmoitemplates" | join .chezmoi.pathSeparator -}}
 
 # {{/* *** OS INFO *** */}}
 # {{- $osRelease := .chezmoi.os -}}
@@ -13,7 +14,7 @@
 
 # {{/* *** CUSTOMIZATIONS *** */}}
 # {{- $gpgRecipient := promptStringOnce .chezmoi.config.gpg "recipient" "Enter GPG recipient" -}}
-# {{- $shellType := promptChoiceOnce . "shell" "Which shell?" (list "bash" "zsh") "bash" -}}
+# {{- $shellType := promptChoiceOnce .shell "type" "Which shell?" (list "bash" "zsh") "bash" -}}
 
 # {{/* *** DATA *** */}} 
 sourceDir: "# {{- .chezmoi.config.sourceDir -}}"
@@ -40,6 +41,8 @@ status:
 data:
   scriptLib:
     output: "# {{ joinPath $scriptLib "output.sh" }}"
+  templateDir:
+    dataDir: "# {{ join .chezmoi.pathSeparator (list $templateDir "data") | toString }}"
   shell: 
     type: "# {{ $shellType }}"
     bashUseOhMyPosh: false

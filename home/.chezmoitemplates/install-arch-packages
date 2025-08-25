@@ -1,0 +1,17 @@
+# chezmoi:template:left-delimiter="# {{"
+# {{- $needed := (get . "packages") -}}
+# {{- range $installed := (splitList "\n" (get . "installed")) -}}
+# {{- 	$needed = without $needed $installed -}}
+# {{- end -}}
+# {{- if $needed }}
+    info "Installing from # {{ get . "bin" }}: # {{$needed}}"
+    # {{ get . "cmd" }} # {{ $needed | join " " }} >/dev/null
+
+    if [ $? -ne 0 ]; then
+        error "Failed to install packages."
+    else
+        success "Finished install."
+    fi
+# {{- else }}
+    info "Packages from # {{ get . "bin" }} already installed."
+# {{- end -}}

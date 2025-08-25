@@ -1,0 +1,7 @@
+---
+# chezmoi:template:left-delimiter="# {{"
+pacman:
+  - mandoc
+  - oh-my-posh
+  - lua-language-server
+  - stylua

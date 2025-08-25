@@ -2,9 +2,14 @@
 externalRefreshPeriod: "168h"
 packages:
   common:
-    - amd-ucode
+    - gnupg
+    - openssh
+    - git
+    - git-delta
+    - which
     - vim
     - neovim
+    - bash
     - bash-completion
     - less
     - bat
@@ -15,6 +20,10 @@ packages:
     - firefox
     - plymouth
     - qbittorrent
-    - git-delta
   yay:
     - brave-bin
+  termux:
+  - mandoc
+  - oh-my-posh
+  - lua-language-server
+  - stylua

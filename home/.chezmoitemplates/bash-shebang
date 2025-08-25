@@ -1,14 +1,10 @@
 # chezmoi:template:left-delimiter="# {{"
 #!# {{ lookPath "bash" }}
-set -u
+set -Eu
 
+##### SETUP 
+# Source helper scripts
 # {{ "source" }} # {{ .scriptLib.output }}
-
-# Get and print script name
-_me=$(basename "$0")
-echo
-fill_width
-dimmed "$_me"
 
 # handle error and exit
 handle_err() {
@@ -18,4 +14,10 @@ handle_err() {
   error "on line $error_line: $error_command (code: ${error_code})"
 	exit 1
 }
+
 trap handle_err ERR
+
+##### BEGIN
+# Print header
+echo
+script_header "$(basename "$0")"
