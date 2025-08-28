@@ -2,6 +2,7 @@
 # chezmoi:template:left-delimiter="# {{"
 pacman:
   - mandoc
+  - bash-completion
   - oh-my-posh
   - lua-language-server
   - stylua

@@ -9,7 +9,6 @@ packages:
     - which
     - vim
     - neovim
-    - bash-completion
     - less
     - bat
     - eza

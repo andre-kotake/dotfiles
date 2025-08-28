@@ -1,11 +1,14 @@
 ---
 # chezmoi:template:left-delimiter="# {{"
 pacman:
+  - pacman-contrib 
   - keepassxc
   - pkgfile
   - firefox
   - plymouth
   - qbittorrent
+  - vlc
+  - vlc-plugin-ffmpeg
 yay:
   - brave-bin
 

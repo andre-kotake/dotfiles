@@ -42,9 +42,6 @@ for f in "$bashrc_dir"/*; do
 done
 unset f, bashrc_dir
 
-# Custom completions
-complete -d mkdir rmdir
-complete -cf man sudo
 # {{- if lookPath "pipx" }}
 if ! shopt -oq posix; then
   eval "$(register-python-argcomplete pipx)"

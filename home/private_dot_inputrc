@@ -17,6 +17,8 @@ $if Bash
 "\eh": backward-kill-word
 $endif
 
+# Inserts the clipboard as single string of characters, instead of inserting characters as if they were entered from the keyboard
+set enable-bracketed-paste on
 # Color files by types (may cause completion text blink in some terminals)
 set colored-stats On
 # Append char to indicate type
@@ -29,11 +31,9 @@ set colored-completion-prefix On
 set menu-complete-display-prefix On
 # Treat hyphens and underscores as equivalent
 set completion-map-case on
-# Make Tab autocomplete regardless of filename case
 set completion-ignore-case on
-# List all matches in case multiple possible completions are possible
-set show-all-if-ambiguous on
 set show-all-if-unmodified on
+set show-all-if-ambiguous on
 
 # Tab or Shift+Tab cycles between possible completions
 TAB: menu-complete
@@ -53,7 +53,7 @@ set match-hidden-files off
 # Show all autocomplete results at once
 set page-completions on
 # If there are more than 100 possible completions for a word, ask to show them all
-set completion-query-items 50
+set completion-query-items 100
 
 # Be more intelligent when autocompleting by also looking at the text after
 # the cursor. For example, when the current line is "cd ~/src/mozil", and
