@@ -7,7 +7,9 @@ export PATH="${PATH}:${HOME}/.local/bin"
 PATH="$HOME/.local/share/flutter/bin:$PATH"
 # {{- end }}
 
-
+# {{- if .osInfo.isArch }}
+export QT_SCREEN_SCALE_FACTORS=1.5
+# {{- end }}
 
 ## ENV
 ###############################################################################

@@ -10,6 +10,11 @@ mkcd() {
   fi
 }
 
+{{ if .osInfo.isArch -}}
+alias pacmanSyu='sudo pacman -Syu --noconfirm'
+alias pacmanRsun='sudo pacman -Rsun --noconfirm'
+{{- end }}
+
 alias remove='shred --remove'
 alias rsync='rsync -ahW --no-compress --progress'
 alias wget="wget --hsts-file=\$XDG_DATA_HOME/wget-hsts"
