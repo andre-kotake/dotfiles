@@ -1,0 +1,125 @@
+#!# {{ lookPath "bash" }}
+# chezmoi:template:left-delimiter="# {{"
+# shellcheck disable=SC2096,SC2239
+
+# {{- $scriptTemplateFolder := printf "scripts/%s/" .osInfo.release -}}
+
+# {{- if .osInfo.isOpenSuse -}}
+#FIXME: Corrigir para OpenSuse
+exit 0
+# {{- end }}
+
+set -euo pipefail
+
+get_installed_packages() {
+  local -a packages=()
+  # {{ includeTemplate (printf "%s%s" $scriptTemplateFolder "get_installed_packages.sh") }}
+  printf "%s\n" "${packages[@]}"
+}
+
+get_needed_packages() {
+  local -a packages=(
+    'git'
+    'neovim'
+    'man'
+    'bash-completion'
+    'gnupg'
+    'openssh'
+    # {{ if not .osInfo.isDebian -}}
+    'bat'
+    'eza'
+    'starship'
+    'git-delta'
+    'keepassxc'
+    'zsh'
+    'fd'
+    'ripgrep'
+    'python'
+    'nodejs'
+    'rust'
+    'ruby'
+    # {{- end }}
+  )
+
+  # {{ if .osInfo.isAndroid -}}
+  # Obter os pacotes especificos para Android
+  packages+=(
+    # {{ includeTemplate (printf "%s%s" $scriptTemplateFolder "get_needed_packages.sh") -}}
+  )
+  # {{- end }}
+
+  printf "%s\n" "${packages[@]}"
+}
+
+get_packages_to_install() {
+  local packages=()
+
+  mapfile -t installed_packages < <(get_installed_packages)
+  mapfile -t needed_packages < <(get_needed_packages)
+
+  for item in "${needed_packages[@]}"; do
+    if ! contains "$item" "${installed_packages[@]}"; then
+      packages+=("$item")
+    fi
+  done
+
+  printf "%s\n" "${packages[@]}"
+}
+
+contains() {
+  local item="$1"
+  shift
+  local array=("$@")
+  for element in "${array[@]}"; do
+    if [[ $element == "$item" ]]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+print_centered_message() {
+  local message="$1"
+  local message_length=${#message}
+  local terminal_width=$(stty size | awk '{print $2}')
+  local padding=$(((terminal_width - (message_length / 2)) / 2))
+  local border_length=$((terminal_width - 2))
+
+  echo -e "\033[34m"
+
+  # Print the message centered
+  printf '*%*s%*s*\n' "$padding" "$message" "$padding" ""
+
+  # Print the bottom border
+  printf '%*s\n' "$terminal_width" '' | tr ' ' '*'{o}
+
+  echo -e "\033[0m"
+}
+
+main() {
+  echo -ne "\033[34m"
+  echo "INSTALAR PACOTES"
+  echo -ne "\033[0m"
+
+  echo " │ Obtendo pacotes..."
+  mapfile -t packages < <(get_packages_to_install)
+
+  if [ ${#packages} -gt 0 ]; then
+
+    echo " │ Instalando: "
+    for ((i = 0; i < "${#packages[@]}"; i++)); do
+      echo -e " │ -\033[36m ${packages[i]}\033[0m"
+    done
+
+    {
+      # {{ includeTemplate (joinPath $scriptTemplateFolder "install_packages.sh") }}
+    } &>/dev/null
+
+    echo -e " │ \033[32mConcluído.\033[0m"
+  else
+    echo -e " │ \033[32mPacotes já instalados.\033[0m"
+  fi
+
+}
+
+main

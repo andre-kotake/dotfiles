@@ -1,0 +1,14 @@
+# ---
+# dracula-dircolors:
+#   type: archive
+#   url: "https://github.com/dracula/dircolors/archive/master.zip"
+#   exact: true
+#   stripComponents: 1
+#   refreshPeriod: "{{ .externalRefreshPeriod }}"
+
+# lscolors:
+#   type: archive
+#   url: "https://github.com/trapd00r/LS_COLORS/archive/master.zip"
+#   exact: true
+#   stripComponents: 1
+#   refreshPeriod: "{{ .externalRefreshPeriod }}"

@@ -1,0 +1,25 @@
+# chezmoi:template:left-delimiter="# {{"
+# {{ includeTemplate "bash-shebang" . }}
+set -x
+# copy the data to modify to a temporary file
+tmpfile=$(mktemp)
+trap "rm -f ${tmpfile}" EXIT
+cat >"${tmpfile}"
+
+# Get the user.signingkey for git config.
+read -rs new_value
+new_value="topas"
+
+if grep -q '^signingkey=' "${tmpfile}"; then
+    # Replace the line
+    sed -i "s/^signingkey=.*/signingkey=${new_value}/" "$tmpfile"
+
+    # write the data to stdout
+    cat "${tmpfile}"
+else
+    # Append it if the line doesn't exist
+    echo "[user]"
+    echo "signingkey=${new_value}"
+fi
+
+unset new_value 

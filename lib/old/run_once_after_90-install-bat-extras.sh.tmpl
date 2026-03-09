@@ -1,0 +1,8 @@
+#!# {{ lookPath "bash" }}
+# chezmoi:template:left-delimiter="# {{"
+# shellcheck disable=SC2096,SC2239
+
+# {{ if eq (lookPath "batgrep") "" }}
+bash "$HOME/.local/share/bat-extras/build.sh" --install --prefix="$HOME/.local/" --minify=all --no-verify
+rm -rf "$HOME/.local/share/bat-extras/{bin,man}"
+# {{ end }}

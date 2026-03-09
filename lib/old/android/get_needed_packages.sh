@@ -1,0 +1,8 @@
+'lua-language-server'
+'stylua'
+'python-ensurepip-wheels'
+'python-pip'
+'clang'
+'binutils-is-llvm'
+'build-essential'
+'proot-distro'
