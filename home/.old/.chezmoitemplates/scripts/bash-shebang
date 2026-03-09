@@ -2,7 +2,7 @@
 #!# {{ lookPath "bash" }}
 set -Eu
 
-##### SETUP 
+##### SETUP
 # Source helper scripts
 # {{ "source" }} # {{ .scriptLib.output }}
 

@@ -17,16 +17,16 @@ blocks:
       cache_duration: none
       max_depth: 3
       style: agnoster_short
-    template: "{{- $git := .Segments.Git -}}  <b> 
+    template: "{{- $git := .Segments.Git -}}  <b>
     {{- if $git.Ref -}}
         {{- $git.RepoName -}}
-        {{- if (regexMatch \"^~\\\\/\\\\.\\\\.\\\\/\" .Path) -}}     
-          {{- .Path | replace (print \"~/../\" $git.RepoName) \"\" -}}   
-        {{- else -}}     
-          {{- .Path | replace $git.Dir \"\" -}}   
-        {{- end -}} 
-    {{- else -}}   
-      {{- .Path -}} 
+        {{- if (regexMatch \"^~\\\\/\\\\.\\\\.\\\\/\" .Path) -}}
+          {{- .Path | replace (print \"~/../\" $git.RepoName) \"\" -}}
+        {{- else -}}
+          {{- .Path | replace $git.Dir \"\" -}}
+        {{- end -}}
+    {{- else -}}
+      {{- .Path -}}
     {{- end -}} </b>"
     style: plain
     foreground: "#42a9ff"

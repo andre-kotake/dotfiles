@@ -6,4 +6,3 @@
 {{- if .osInfo.isAndroid }}
 .bash_profile
 {{- end }}
-

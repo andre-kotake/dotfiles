@@ -11,4 +11,3 @@ pacman:
   - vlc-plugin-ffmpeg
 yay:
   - brave-bin
-

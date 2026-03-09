@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # clear the state of run_onchange_ scripts
 chezmoi state delete-bucket --bucket=entryState
 

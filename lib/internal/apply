@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+chezmoi apply \
+  --destination ~/repositories/dotfiles/output/

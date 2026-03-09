@@ -1,27 +1,22 @@
 ---
 # chezmoi:template:left-delimiter="# {{"
-# {{/* *** PATHS ************************************* */}}
+# {{/* *** VARIABLES *** */}}
 # {{- $scriptLib := joinPath .chezmoi.workingTree "lib" -}}
-# {{/* *********************************************** */}}
+# {{- $templateDir := list "." ".chezmoitemplates" | join .chezmoi.pathSeparator -}}
 
-# {{/* *** OS INFO *********************************** */}}
+# {{/* *** OS INFO *** */}}
 # {{- $osRelease := .chezmoi.os -}}
 # {{- if (eq $osRelease "linux") -}}
 # {{-     $osRelease = .chezmoi.osRelease.id -}}
 # {{- end -}}
-# {{- $isArch := (eq $osRelease "arch") -}}
 # {{- $isAndroid := (eq $osRelease "android") -}}
-# {{- $isDebian := (eq $osRelease "debian") -}}
-# {{/* *********************************************** */}}
+# {{- $isArch := (eq $osRelease "arch") -}}
 
-# {{/* *** CUSTOMIZATIONS **************************** */}}
+# {{/* *** CUSTOMIZATIONS *** */}}
 # {{- $gpgRecipient := promptStringOnce .chezmoi.config.gpg "recipient" "Enter GPG recipient" -}}
 # {{- $shellType := promptChoiceOnce .shell "type" "Which shell?" (list "bash" "zsh") "bash" -}}
-# {{/* *********************************************** */}}
 
-
-# {{/* *** DATA ************************************** */}}
-
+# {{/* *** DATA *** */}}
 sourceDir: "# {{- .chezmoi.config.sourceDir -}}"
 destDir: "# {{- .chezmoi.config.destDir -}}"
 
@@ -45,13 +40,14 @@ status:
 
 data:
   scriptLib:
-    output: "# {{ joinPath $scriptLib 'output.sh' }}"
+    output: "# {{ joinPath $scriptLib "output.sh" }}"
+  templateDir:
+    dataDir: "# {{ join .chezmoi.pathSeparator (list $templateDir "data") | toString }}"
   shell:
     type: "# {{ $shellType }}"
-    # bashUseOhMyPosh: true
+    bashUseOhMyPosh: true
 
   osInfo:
     release: "# {{ $osRelease }}"
-    isArch: # {{ $isArch }}
     isAndroid: # {{ $isAndroid }}
-    isDebian: # {{ $isDebian }}
+    isArch: # {{ $isArch }}

@@ -17,8 +17,8 @@ check_signingkey() {
   # Check if the file exists
   if [[ -f "$config_file" ]]; then
     # Check if the file contains a line starting with 'signingkey='
-    grep -q '^signingkey=' "$config_file" && echo 1 && return 
-   
+    grep -q '^signingkey=' "$config_file" && echo 1 && return
+
     # Extract the value after 'signingkey='
     local key=$(grep '^signingkey=' "$config_file" | cut -d'=' -f2)
     # Check if the value is empty
@@ -41,7 +41,7 @@ get_signingkey() {
     echo "signingkey=${signingkey}"
   } >"$tmpfile"
 
-  # Replace the target file 
+  # Replace the target file
   cp -f "$tmpfile" "$HOME/.config/git/signingkey"
 
   success "Updated Git signing key!"
@@ -56,4 +56,3 @@ if [[ "$result" -eq 1 ]]; then
 else
   info "Signing key already set."
 fi
-
