@@ -1,0 +1,15 @@
+# chezmoi:template:left-delimiter="# {{"
+# {{- if .osInfo.isDebian -}}
+
+#!/usr/bin/env bash
+
+# distro_id=$(. /etc/os-release && echo $ID)
+#
+# # Só deve ser executado se a distro for Debian
+# if [[ $distro_id != "debian" ]]; then
+#   exit
+# fi
+
+sudo usermod -s /bin/bash $USER
+
+# {{- end }}

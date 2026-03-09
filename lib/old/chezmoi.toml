@@ -1,0 +1,69 @@
+# chezmoi:template:left-delimiter="# {{"
+
+# {{- /* Checks if running interactively, which is not the case for GitHub Codespaces */ -}}
+# {{- $interactive := stdinIsATTY -}}
+# {{- if $interactive -}}
+# {{-   writeToStdout "💡Tip: you can re-enter data with `chezmoi init --data=false`.\n" -}}
+# {{- end -}}
+
+# {{- /* Initializes the name variable with a default value */ -}}
+# {{- $name := "Your Name" -}}
+# {{- /* If name was previously set, reuses it */ -}}
+# {{- if hasKey . "name" -}}
+# {{-   $name = .name -}}
+# {{- /* Otherwise, if running interactively, prompts for a name */ -}}
+# {{- else if $interactive -}}
+# {{-   $name = promptString "name" $name -}}
+# {{- end -}}
+
+#{{- $git_oauth_token := promptStringOnce . "git.oauth_token" "gh oauth_token" "not set" -}}
+
+# {{- /*-----------------------------------------------------------------*/ -}}
+# {{- /* Get OS info                                                     */ -}}
+# {{- /*-----------------------------------------------------------------*/ -}}
+# {{-   $osId := .chezmoi.os                                                -}}
+# {{-   $osRelease := .chezmoi.os                                           -}}
+# {{-   if hasKey .chezmoi.osRelease "id"                                   -}}
+# {{-     $osId = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id          -}}
+# {{-     $osRelease = .chezmoi.osRelease.id                                -}}
+# {{-   end                                                                 -}}
+# {{- /*-----------------------------------------------------------------*/ -}}
+
+#{{- /*-----------------------------------------------------------------*/ -}}
+#{{- /* Choose default Shell                                            */ -}}
+#{{- /*-----------------------------------------------------------------*/ -}}
+#{{-   $choices := list "bash" "zsh"                                       -}}
+#{{-   $shell := promptChoiceOnce . "shell" "Choose a shell" $choices      -}}
+#{{- /*-----------------------------------------------------------------*/ -}}
+
+# DATA
+sourceDir = "# {{ .chezmoi.config.sourceDir }}"
+
+[scriptEnv]
+# Usa a config do Bashly do source, já que o arquivo pode não existir.
+BASHLY_SETTINGS_PATH  = "# {{- .chezmoi.config.sourceDir -}}/home/private_dot_config/private_bashly/private_settings.yml"
+
+[status]
+exclude = ["scripts"]
+
+[diff]
+command = "delta"
+exclude = ["scripts"]
+
+[data.configs]
+shell = "bash"
+# shell = "#{{ $shell }}"
+# git.oauth_token = "#{{ $git_oauth_token }}"
+
+[data.osInfo]
+id = "# {{ $osId }}"
+release = "# {{ $osRelease }}"
+isAndroid = # {{ eq $osId "android" }}
+isOpenSuse = # {{ eq $osRelease "opensuse-tumbleweed" }}
+isDebian = # {{ eq $osRelease "debian" }}
+
+[keepassxc]
+database = "# {{ joinPath .chezmoi.homeDir "Documents" "DB" "main.kdbx" }}"
+
+[pinentry]
+command = "pinentry-curses"

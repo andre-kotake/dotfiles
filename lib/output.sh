@@ -70,10 +70,10 @@ declare -A st=(
 
 # Get terminal width
 term_width() {
-  stty size | awk '{print $2}'
+  # stty size | awk '{print $2}'
+  echo "${COLUMNS:-80}"
 }
 
-#
 repeat() {
   local code="$1"
   local count="${2:-$(term_width)}"

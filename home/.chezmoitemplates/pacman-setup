@@ -1,0 +1,38 @@
+update_pacman_config() {
+  # Define the path to pacman.conf
+  local pacman_conf="$PREFIX/etc/pacman.conf"
+
+  # Function to check if a pattern exists in a file
+  pattern_exists_in_file() {
+    pattern=$1
+    file=$2
+    grep -q "^$pattern" "$file"
+  }
+
+  # Function to uncomment a line if it is commented out
+  uncomment_if_commented() {
+    pattern=$1
+    file=$2
+    sed -i "s/^\s*#*\($pattern\)/\1/" "$file"
+  }
+
+  # Check if ILoveCandy is present in pacman.conf
+  if ! pattern_exists_in_file "ILoveCandy" "$pacman_conf"; then
+    # Check if ParallelDownloads is defined in pacman.conf
+    if pattern_exists_in_file "ParallelDownloads\s*=" "$pacman_conf"; then
+      # Append ILoveCandy after ParallelDownloads = 5
+      sed -i '/^\s*ParallelDownloads\s*=/a ILoveCandy' "$pacman_conf"
+    else
+      # Add ParallelDownloads = 5 and ILoveCandy to pacman.conf
+      echo "ParallelDownloads = 5" | sudo tee -a "$pacman_conf" >/dev/null
+      echo "ILoveCandy" | sudo tee -a "$pacman_conf" >/dev/null
+    fi
+  else
+    # Uncomment ILoveCandy if it is commented out
+    uncomment_if_commented "ILoveCandy" "$pacman_conf"
+  fi
+
+  # Uncomment ParallelDownloads and Color if necessary
+  uncomment_if_commented "ParallelDownloads\s*=\s*5" "$pacman_conf"
+  uncomment_if_commented "Color" "$pacman_conf"
+}

@@ -1,0 +1,4 @@
+["open-in-editor"]
+type = "file"
+url = "https://raw.githubusercontent.com/dandavison/open-in-editor/master/open-in-editor"
+executable = true

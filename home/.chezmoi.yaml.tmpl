@@ -45,7 +45,7 @@ data:
     dataDir: "# {{ join .chezmoi.pathSeparator (list $templateDir "data") | toString }}"
   shell: 
     type: "# {{ $shellType }}"
-    bashUseOhMyPosh: false
+    bashUseOhMyPosh: true
     
   osInfo:
     release: "# {{ $osRelease }}"
