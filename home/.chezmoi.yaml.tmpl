@@ -5,20 +5,20 @@
 # {{/* *********************************************** */}}
 
 # {{/* *** OS INFO *********************************** */}}
-# {{- $osRelease := .chezmoi.os -}}
-# {{- if (eq $osRelease "linux") -}}
-# {{-     $osRelease = .chezmoi.osRelease.id -}}
+# {{- $osReleaseId := .chezmoi.os -}}
+# {{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
+# {{-   $osReleaseId = .chezmoi.osRelease.id -}}
 # {{- end -}}
-# {{- $isArch := (eq $osRelease "arch") -}}
-# {{- $isAndroid := (eq $osRelease "android") -}}
-# {{- $isDebian := (eq $osRelease "debian") -}}
+# {{- $isAndroid := (eq $osReleaseId "android") -}}
+# {{- $isDebian := (eq $osReleaseId "debian") -}}
 # {{/* *********************************************** */}}
 
 # {{/* *** CUSTOMIZATIONS **************************** */}}
-# {{- $gpgRecipient := promptStringOnce .chezmoi.config.gpg "recipient" "Enter GPG recipient" -}}
-# {{- $shellType := promptChoiceOnce .shell "type" "Which shell?" (list "bash" "zsh") "bash" -}}
+# {{- $gpgRecipient := promptStringOnce .  "gpg.recipient" "Enter GPG recipient" -}}
+# {{- $gitSigningkey := promptStringOnce .  "git.signingkey" "Enter git signingkey" -}}
+# {{- $shellType := promptChoiceOnce . "shell.type" "Which shell?" (list "bash" "zsh") "bash" -}}
+# {{- $optionalPackages := promptBoolOnce . "packages.installOptional" "Install optional packages?" -}}
 # {{/* *********************************************** */}}
-
 
 # {{/* *** DATA ************************************** */}}
 
@@ -26,6 +26,8 @@ sourceDir: "# {{- .chezmoi.config.sourceDir -}}"
 destDir: "# {{- .chezmoi.config.destDir -}}"
 
 encryption: "gpg"
+env:
+  # LOG_LEVEL: "3"
 format: "yaml"
 interactive: true
 
@@ -44,14 +46,31 @@ status:
   exclude: [externals]
 
 data:
+  externalRefreshPeriod: "168h"
   scriptLib:
-    output: "# {{ joinPath $scriptLib 'output.sh' }}"
+    output: '# {{ joinPath $scriptLib "output.sh" }}'
+  gpg:
+    recipient: "# {{ $gpgRecipient }}"
+  git:
+    signingkey: "# {{ $gitSigningkey }}"
   shell:
     type: "# {{ $shellType }}"
-    # bashUseOhMyPosh: true
-
   osInfo:
-    release: "# {{ $osRelease }}"
-    isArch: # {{ $isArch }}
     isAndroid: # {{ $isAndroid }}
     isDebian: # {{ $isDebian }}
+  packages:
+    installOptional: # {{ $optionalPackages }}
+    required:
+      - curl
+      - git
+      - gnupg
+      - less
+      - vim
+      - bat
+      - eza
+      - git-delta
+      - neovim
+      # {{ if $isDebian -}}
+      - openssh-server
+      - readline-common
+      # {{ end -}}

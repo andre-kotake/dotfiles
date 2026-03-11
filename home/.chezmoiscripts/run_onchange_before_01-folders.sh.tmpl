@@ -1,0 +1,24 @@
+# chezmoi:template:left-delimiter="# {{"
+# {{ includeTemplate "chezmoiscript" . }}
+
+# {{ $needed := list -}}
+# {{ $folders := list -}}
+# {{ $folders = append $folders ".local/state" -}}
+
+# {{ $homeDir := .chezmoi.homeDir }}
+# {{ range $folders -}}
+# {{ $path := joinPath $homeDir . }}
+# {{   if not (stat $path) -}}
+# {{     $needed = append $needed $path }}
+# {{   end }}
+# {{ end }}
+
+# {{ if $needed }}
+log_info "Creating directories..."
+# {{   range $needed -}}
+mkdir -p "# {{ . }}"
+log_ok "Created # {{ . }}"
+# {{   end -}}
+# {{ else -}}
+log_ok "All directories already exists"
+# {{ end -}}

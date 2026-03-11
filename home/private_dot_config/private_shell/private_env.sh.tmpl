@@ -1,0 +1,53 @@
+# chezmoi:template:left-delimiter="# {{"
+export PATH="${PATH}:${HOME}/.local/bin"
+
+export PROMPT_DIRTRIM=2
+export MANROFFOPT="-P -c"
+export INPUTRC="${HOME}/.config/readline/inputrc"
+
+# {{ if lookPath "nvim" -}}
+export EDITOR="nvim"
+export SUDO_EDITOR="nvim"
+export VISUAL="nvim"
+# {{ else -}}
+export EDITOR="vim"
+export SUDO_EDITOR="vim"
+export VISUAL="vim"
+# {{ end -}}
+
+export MANPAGER='less' # Could be bat too.
+export PAGER="less"
+
+export LESS="-E \
+--quit-if-one-screen \
+--ignore-case \
+--LONG-PROMPT \
+--RAW-CONTROL-CHARS \
+--tabs=2 \
+--mouse \
+--no-init \
+--use-color -Dd+rd -Dk+r -Ds+yd -Du+gd"
+export LESSHISTFILE="${HOME}/.local/state/less/history"
+
+# {{ if lookPath "bat" -}}
+export BAT_THEME="Dracula"
+# {{ end }}
+# {{ if .osInfo.isAndroid -}}
+# Fixes ruamel.yaml.clib installation for pip
+export CFLAGS="-Wno-incompatible-function-pointer-types"
+# {{ end }}
+
+# {{- if lookPath "python" }}
+export PYTHON_HISTORY="${HOME}/.local/state/python/history"
+export PYTHONPYCACHEPREFIX="${HOME}/.cache/python"
+export PYTHONUSERBASE="${HOME}/.local/share/python"
+# {{- end }}
+# {{- if lookPath "go" }}
+export GOPATH="${HOME}/.local/share/go"
+# {{- end }}
+# {{- if lookPath "cargo" }}
+export CARGO_HOME="${HOME}/.local/share/cargo"
+# {{- end }}
+# {{- if lookPath "npm" }}
+export NPM_CONFIG_USERCONFIG="${HOME}/.config/npm/npmrc"
+# {{- end }}

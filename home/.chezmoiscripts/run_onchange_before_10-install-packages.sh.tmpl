@@ -1,0 +1,42 @@
+# chezmoi:template:left-delimiter="# {{"
+# {{ includeTemplate "chezmoiscript" . }}
+
+# {{- $needed := .packages.required -}}
+
+install() {
+  if ! [ "$#" -gt 0 ]; then
+    return
+  fi
+
+  log_info "Installing $# missing packages:"
+  printf ' - %s\n' "$@"
+
+  # {{ $sudo := "sudo " -}}
+  # {{ if eq .chezmoi.username "root" -}}
+  # {{   $sudo = "" -}}
+  # {{ end -}}
+
+  # {{ if .osInfo.isDebian -}}
+  # {{   $sudo }} apt update -y
+  # {{   $sudo }} apt upgrade -y
+  # {{   $sudo }} apt install -y "$@"
+  # {{ end }}
+}
+
+#shellcheck disable=2120
+check() {
+  log_info "Checking for packages:"
+  for cmd in "$@"; do
+    if ! dpkg -s "$cmd" >/dev/null 2>&1; then
+      # log_warn "$cmd missing"
+      printf '%s\n' "$cmd"
+    else
+      : # info " - $cmd ok"
+    fi
+  done
+}
+
+#shellcheck disable=2046
+install $(
+  check # {{ $needed | join " " }}
+)

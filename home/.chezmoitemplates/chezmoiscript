@@ -1,0 +1,11 @@
+# chezmoi:template:left-delimiter="# {{"
+#!# {{ lookPath "sh" }}
+set -eu
+
+# Source helper scripts
+# {{ "." }} # {{ .scriptLib.output }}
+
+trap 'die "Interrupted"' INT TERM
+trap 'status=$?; [ $status -ne 0 ] && log_error "Script failed ($status)"' EXIT
+
+log_script

@@ -1,0 +1,21 @@
+# chezmoi:template:left-delimiter="# {{"
+#!# {{ lookPath "sh" }}
+set -eu
+
+# Source helper scripts
+# {{ "source" }} # {{ .scriptLib.output }}
+
+die() {
+  error "$1"
+  exit 1
+}
+
+cleanup() {
+  status=$?
+  [ "$status" -ne 0 ] && error "Script failed"
+}
+
+trap cleanup EXIT
+trap 'exit 1' INT TERM
+
+script_header "$(basename "$0")"
