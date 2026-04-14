@@ -1,15 +1,15 @@
 ---
-bat-extras:
-  type: archive
-  url: https://github.com/eth-p/bat-extras/archive/master.tar.gz
-  exact: true
-  stripComponents: 1
-  include:
-    - "*/lib/**"
-    - "*/src/**"
-    - "*/build.sh"
-    - "*/version.txt"
-    - "*/banner.txt"
+# bat-extras:
+#   type: archive
+#   url: https://github.com/eth-p/bat-extras/archive/master.tar.gz
+#   exact: true
+#   stripComponents: 1
+#   include:
+#     - "*/lib/**"
+#     - "*/src/**"
+#     - "*/build.sh"
+#     - "*/version.txt"
+#     - "*/banner.txt"
 
 lscolors.sh:
   type: file

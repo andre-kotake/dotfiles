@@ -5,17 +5,17 @@ alias mkdir='mkdir -p'
 
 alias remove='shred --remove'
 alias rsync='rsync -ahW --no-compress --progress'
-alias wget="wget --hsts-file=\$XDG_DATA_HOME/wget-hsts"
+alias wget='wget -hv --progress=bar --show-progress --hsts-file= "$XDG_DATA_HOME"/wget-hsts'
 alias cp="cp -i --verbose"
 alias mv="mv -i --verbose"
 alias rm="rm -r -d -I --verbose"
+alias du="du -hcs"
 
 alias ..='../'
 alias ...='../..'
 alias ....='../../..'
 
 alias g='git'
-
 # ls
 {{ if lookPath "eza" -}}
 alias eza='eza -hAF --color=always --icons=auto --git-repos --git --no-user --group-directories-last'

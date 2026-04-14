@@ -1,0 +1,6 @@
+# chezmoi:template:left-delimiter="# {{"
+# {{ includeTemplate "chezmoiscript" . }}
+# {{- $shell := lookPath .shell -}}
+
+log_info "Changing shell to # {{ $shell }}"
+chsh -s # {{ $shell -}}

@@ -1,5 +1,10 @@
-## If not running interactively, don't do anything
+# If not running interactively, don't do anything
 [[ $- != *i* ]] && return
+
+# Check if not sourced already
+[ -n "${BASHRC_LOADED:-}" ] && return
+BASHRC_LOADED=1
+export BASHRC_LOADED
 
 ## Version check
 if ((BASH_VERSINFO[0] < 4)); then
@@ -26,10 +31,14 @@ case "$TERM" in
   *) ;;
 esac
 
-# # enable color support of ls
-# if [ -x /usr/bin/dircolors ]; then
-#   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-# fi
+# enable color support of ls
+if [ -x dircolors ]; then
+  eval "$(dircolors -b)"
+fi
+
+if [ -f "$HOME/.local/share/lscolors.sh" ]; then
+  source "$HOME/.local/share/lscolors.sh"
+fi
 
 source ~/.config/shell/env.sh
 source ~/.config/shell/history.sh
@@ -39,3 +48,5 @@ source ~/.config/shell/gnupg.sh
 
 source ~/.config/bash/options.sh
 source ~/.config/bash/prompt.sh
+
+source ~/.local/share/bash-completion/completions/complete_alias

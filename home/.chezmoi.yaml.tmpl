@@ -9,15 +9,16 @@
 # {{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
 # {{-   $osReleaseId = .chezmoi.osRelease.id -}}
 # {{- end -}}
+# {{- $isAlpine := (eq $osReleaseId "alpine") -}}
 # {{- $isAndroid := (eq $osReleaseId "android") -}}
 # {{- $isDebian := (eq $osReleaseId "debian") -}}
+# {{- $isUbuntu := (eq $osReleaseId "ubuntu") -}}
 # {{/* *********************************************** */}}
 
 # {{/* *** CUSTOMIZATIONS **************************** */}}
 # {{- $gpgRecipient := promptStringOnce .  "gpg.recipient" "Enter GPG recipient" -}}
 # {{- $gitSigningkey := promptStringOnce .  "git.signingkey" "Enter git signingkey" -}}
-# {{- $shellType := promptChoiceOnce . "shell.type" "Which shell?" (list "bash" "zsh") "bash" -}}
-# {{- $optionalPackages := promptBoolOnce . "packages.installOptional" "Install optional packages?" -}}
+# {{- $shell := promptChoiceOnce . "shell" "Which shell?" (list "bash" "zsh") "bash" -}}
 # {{/* *********************************************** */}}
 
 # {{/* *** DATA ************************************** */}}
@@ -47,19 +48,20 @@ status:
 
 data:
   externalRefreshPeriod: "168h"
-  scriptLib:
-    output: '# {{ joinPath $scriptLib "output.sh" }}'
+  scriptLib: "# {{ $scriptLib }}"
   gpg:
     recipient: "# {{ $gpgRecipient }}"
   git:
     signingkey: "# {{ $gitSigningkey }}"
-  shell:
-    type: "# {{ $shellType }}"
+  shell: "# {{ $shell }}"
+  isRoot: # {{ eq .chezmoi.username "root" }}
   osInfo:
-    isAndroid: # {{ $isAndroid }}
-    isDebian: # {{ $isDebian }}
+    id: "# {{ $osReleaseId }}"
+    isAlpine: "# {{ $isAlpine }}"
+    isAndroid: "# {{ $isAndroid }}"
+    isDebian: "# {{ $isDebian }}"
+    isUbuntu: "# {{ $isUbuntu }}"
   packages:
-    installOptional: # {{ $optionalPackages }}
     required:
       - curl
       - git
@@ -68,9 +70,27 @@ data:
       - vim
       - bat
       - eza
-      - git-delta
       - neovim
+      - coreutils
+      # {{ if eq $shell "bash" }}
+      - bash
+      - bash-completion
+      # {{ end -}}
+      # {{ if eq $shell "zsh" }}
+      - zsh
+      # {{ end -}}
+
       # {{ if $isDebian -}}
       - openssh-server
       - readline-common
+      # {{ end -}}
+
+      # {{ if $isAlpine -}}
+      - doas-sudo-shim
+      - delta
+      - shadow
+      # {{ end -}}
+
+      # {{ if not $isAlpine -}}
+      - git-delta
       # {{ end -}}
