@@ -1,0 +1,41 @@
+# chezmoi:template:left-delimiter="# {{"
+# {{ includeTemplate "script_header.sh" . -}}
+
+#shellcheck disable=1090
+. # {{ joinPath .scriptLib "os.sh" }}
+CURRENT_OS=$(detect_os)
+
+. # {{ joinPath .scriptLib "sudo.sh" }}
+. # {{ joinPath .scriptLib "packages" (printf "%s.sh" .osInfo.id) }}
+
+install_missing_packages() {
+  # Do nothing if no packages to install
+  [ "$#" -eq 0 ] && return
+
+  log_info "Installing $# missing packages:"
+  printf ' - %s\n' "$@"
+
+  install_packages "$@"
+}
+
+#shellcheck disable=2120
+check_missing_packages() {
+  log_info "Checking for packages:"
+  for cmd in "$@"; do
+    if ! check_package "$cmd"; then
+      log_debug " - $cmd not found"
+      printf '%s\n' "$cmd"
+    else
+      log_debug " - $cmd ok"
+    fi
+  done
+}
+
+# {{ $needed := .packages.required -}}
+
+#shellcheck disable=2046
+set -- $(
+  check_missing_packages # {{ $needed | join " " }}
+)
+
+install_missing_packages "$@"

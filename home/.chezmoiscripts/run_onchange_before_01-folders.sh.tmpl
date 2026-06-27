@@ -1,0 +1,27 @@
+# chezmoi:template:left-delimiter="# {{"
+
+# {{- $needed := list -}}
+# {{- $folders := list
+".local/bin"
+".local/state"
+".local/share"
+".cache"
+".config/gnupg"
+-}}
+
+# {{ $homeDir := .chezmoi.homeDir -}}
+
+# {{ range $folders -}}
+# {{   $path := joinPath $homeDir . -}}
+# {{   if not (stat $path) -}}
+# {{     $needed = append $needed $path -}}
+# {{   end -}}
+# {{ end -}}
+
+# {{ if $needed -}}
+# {{ includeTemplate "script_header.sh" . -}}
+
+log_info "Creating directories..."
+mkdir -p # {{ $needed | join " " }}
+
+# {{ end -}}

@@ -1,0 +1,4 @@
+external-sources=true
+source-path=.
+source-path=./lib
+source-path=./lib/packages

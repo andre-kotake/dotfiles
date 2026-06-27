@@ -1,0 +1,108 @@
+---
+# chezmoi:template:left-delimiter="# {{"
+
+# {{/* ---------------------- PATHS --------------------------------------- */}}
+# {{- $scriptLib := joinPath .chezmoi.workingTree "lib" -}}
+# {{/* -------------------------------------------------------------------- */}}
+
+
+# {{/* ---------------------- OS INFO ------------------------------------- */}}
+# {{- $osReleaseId := .chezmoi.os -}}
+# {{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
+# {{-   $osReleaseId = .chezmoi.osRelease.id -}}
+# {{- end -}}
+# {{- $isAlpine := (eq $osReleaseId "alpine") -}}
+# {{- $isAndroid := (eq $osReleaseId "android") -}}
+# {{- $isDebian := (eq $osReleaseId "debian") -}}
+# {{- $isUbuntu := (eq $osReleaseId "ubuntu") -}}
+# {{/* -------------------------------------------------------------------- */}}
+
+
+# {{/* ---------------------- CUSTOMIZATIONS ------------------------------ */}}
+# {{- $gpgRecipient := promptStringOnce .  "gpg.recipient" "Enter GPG recipient" -}}
+# {{- $gitSigningkey := promptStringOnce .  "git.signingkey" "Enter git signingkey" -}}
+# {{/* -------------------------------------------------------------------- */}}
+
+
+# {{/* ---------------------- DATA ---------------------------------------- */}}
+
+sourceDir: "# {{- .chezmoi.config.sourceDir -}}"
+destDir: "# {{- .chezmoi.config.destDir -}}"
+
+encryption: "gpg"
+env:
+  # LOG_LEVEL: "3"
+format: "yaml"
+# interactive: true
+
+diff:
+  # {{ if lookPath "delta" -}}
+  command: "delta"
+  # {{ end -}}
+  exclude: [scripts]
+
+gpg:
+  recipient: "# {{ $gpgRecipient }}"
+  args: [--quiet]
+
+pinentry:
+  command: "pinentry-curses"
+
+status:
+  exclude: [externals]
+
+data:
+  externalRefreshPeriod: "168h"
+  scriptLib: "# {{ $scriptLib }}"
+  gpg:
+    recipient: "# {{ $gpgRecipient }}"
+  git:
+    signingkey: "# {{ $gitSigningkey }}"
+  isRoot: # {{ eq .chezmoi.username "root" }}
+  osInfo:
+    id: "# {{ $osReleaseId }}"
+    isAlpine: "# {{ $isAlpine }}"
+    isAndroid: "# {{ $isAndroid }}"
+    isDebian: "# {{ $isDebian }}"
+    isUbuntu: "# {{ $isUbuntu }}"
+  packages:
+    required:
+      - curl
+      - wget
+      - git
+      - gnupg
+      - openssh
+      - coreutils
+      - less
+      - which
+      - bat
+      - eza
+      - zoxide
+      - fzf
+      - ripgrep
+      - ripgrep
+      - vim
+      - neovim
+      - bash
+      - bash-completion
+      - readline
+
+      # {{ if $isAndroid -}}
+      - python
+      - python-pip 
+      - python-ensurepip-wheels
+      - npm
+      - clang
+      - make
+      - rust
+      # {{ end -}}
+
+      # {{ if $isAlpine -}}
+      - doas-sudo-shim
+      - delta
+      - shadow
+      # {{ end -}}
+
+      # {{ if not $isAlpine -}}
+      - git-delta
+      # {{ end -}}
